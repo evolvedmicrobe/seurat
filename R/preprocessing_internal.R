@@ -99,6 +99,9 @@ RegressOutResid <- function(
     regression.mat <- cbind(latent.data, data.use[1,])
     colnames(regression.mat) <- reg.mat.colnames
     qr = lm(as.formula(fmla_str), data = regression.mat, qr = TRUE)$qr
+    if(qr$rank != min(dim(regression.mat))) {
+      stop("The regression matrix did not have the expected dimensionality, check input data and investigate.")
+    }
     rm(regression.mat)
   }
   data.resid <- foreach(i = 1:max.bin, .combine = "c", .options.snow = opts) %dopar% {
